@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>sonar_detector</name>
+  <version>0.3.2</version>
+  <description>Sonar object detector package</description>
+
+  <maintainer email="mj@ubiquityrobotics.com">Mark Johnston</maintainer>
+
+  <license>BSD</license>
+
+  <author email="mj@ubiquityrobotics.com">Mark Johnston</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+</package>
