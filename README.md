@@ -7,29 +7,53 @@ This is a Package that provides a ROS interface for simple collision avoidance f
 The logic implemented stops all robot drive when an object is too close to any of the 3 forward facing sonar detectors. 
 By default the robot may back up and continue on it's travels or will wait till the object is no longer in the detection zone and movement may continue once again. This is a simple system meant to avoid objects that may move in front then move on out of the way.
 
-The ROS motor node must monitor topic /system_control for defined messages that will render all cmd_vel as if they were all zero movements when in disabled mode.
+Note that this node does not do any sort of route re-planning or other navigation functions.  It just avoids hitting things that the sonar units can detect.  The 3 sonar units used each detect objects that are within a +/- 25 degree cone of detection that is out in front of each sonar board.  Objects that are to the side or above or below that cone of detection will not be 'seen'
+
+The current ROS motor_node monitors the topic /system_control for defined messages that will render all cmd_vel as if they were all zero movements when in disabled mode.
+
+The sonar_detector node is not designed to be used while move_basic is in use.  That is because move_basic already has it's own collision avoidance so using this node at the same time of move_basic should not be done.
+
+We have near completion another simple node that uses sonars to 'wander around a room' on it's own and that will at some future date be in our demos repository under demos/sonar_wanderer.
 
 ## Prerequisites For This Node
 
+None of the code is on any image as of March 2021.   The ubiquity_motor code of the future will have the ability to recognize the messages on topic /system_control at some point in the future.
+
+There are no plans for the sonar_detector to be shipped by default on our images so you must get it from our github
+
+### Current Version Of the ubiquity_motor node
+
 This node uses are commands to the Ubiquity Robotics motor_node that are unique.  Our motor_node only recognizes the required commands on the `system_control` topic as of mid Feb of 2021. Below is how to get the current motor node.
+
+If you already have the folder of ~/catkin_ws/src/ubiquity_motor then do this:
+
+    cd ~/catkin_ws/src/ubiquity_motor
+    git pull
+
+If you do not have the above folder then do this:
 
     cd ~/catkin_ws/src
     git clone https://github.com/UbiquityRobotics/ubiquity_motor
-    sudo systemctl stop magni-base
-    cd ~/catkin_ws
-    catkin_make
-    sudo systemctl start magni-base  (or reboot later)
 
-## Installation
+You now have the source code and can next get sonar_detector code.
+You will have to do a make once both ubiquity_motor as well as the sonar_detector code are in your catkin_workspace
 
-This package may be installed from binaries for both x86 and ARM architectures.
+### Installation of the sonar_detector code
 
 The package must be manually installed and run by users who wish to implement collision avoidance in their ROS based robots.
+There are no existing images with sonar_detector and it is considered an optional package
 
-The full source should be copied into the robot ~/catkin_ws/src/sonar_detector newly created folder and then this would form the sonar_detector node
+    cd ~/catkin_ws/src
+    git clone https://github.com/UbiquityRobotics/sonar_detector
+
+### Do a make so the code can be used
 
     cd ~/catkin_ws
+    sudo systemctl stop magni-base
     catkin_make
+    sudo shutdown -r now
+
+After the robot reboots you may run the node at any time in the future use of the robot
     
 ## Running the Node
 
